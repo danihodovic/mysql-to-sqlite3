@@ -11,18 +11,15 @@ from decimal import Decimal
 from math import ceil
 from os.path import realpath
 
-import mysql.connector
 import six
-from mysql.connector import errorcode  # pylint: disable=C0412
-from tqdm import trange
 
-from mysql_to_sqlite3.sqlite_utils import (  # noqa: ignore=I100
-    adapt_decimal,
-    adapt_timedelta,
-    convert_decimal,
-    convert_timedelta,
-    encode_data_for_sqlite,
-)
+import mysql.connector
+from mysql.connector import errorcode  # pylint: disable=C0412
+from mysql_to_sqlite3.sqlite_utils import adapt_decimal  # noqa: ignore=I100
+from mysql_to_sqlite3.sqlite_utils import (adapt_timedelta, convert_decimal,
+                                           convert_timedelta,
+                                           encode_data_for_sqlite)
+from tqdm import trange
 
 if six.PY2:
     from .sixeptions import *  # pylint: disable=W0622,W0401,W0614
@@ -206,6 +203,7 @@ class MySQLtoSQLite:  # pylint: disable=R0902,R0903
                 type=self._translate_type_from_mysql_to_sqlite(row["Type"]),
                 notnull="NULL" if row["Null"] == "YES" else "NOT NULL",
             )
+            self._logger.warning(sql)
 
         self._mysql_cur_dict.execute(
             """
